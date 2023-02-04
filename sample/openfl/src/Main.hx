@@ -1,7 +1,6 @@
 package;
 
 import openfl.events.KeyboardEvent;
-import openfl.events.Event;
 import openfl.display.Sprite;
 import hxcodecpro.openfl.VideoSprite;
 
@@ -16,6 +15,7 @@ class Main extends Sprite
     printVersionInfo();
 
     video = new VideoSprite();
+    video.autoResize = true;
     addChild(video);
 
     stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
@@ -25,7 +25,8 @@ class Main extends Sprite
   {
     trace(event);
 
-    switch(event.keyCode) {
+    switch (event.keyCode)
+    {
       case 81: // Q
         video.playVideo("assets/earth.webm");
       case 87: // W
@@ -41,8 +42,7 @@ class Main extends Sprite
         video.playVideo("assets/earth.webm");
 
       case 90: // Z
-        var err:String = hxcodecpro._internal.LibVLCError.errmsg();
-        trace(err);
+        hxcodecpro._internal.LibVLCError.LibVLCErrorHelper.printErrorMessage();
     }
   }
 

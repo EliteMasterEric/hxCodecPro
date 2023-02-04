@@ -2,7 +2,7 @@ package hxcodecpro._internal;
 
 import cpp.Int64;
 
-#if (!(desktop || android) && macro)
+#if (!(desktop || android))
 #error "LibVLC only supports the Windows, Mac, Linux, and Android target platforms."
 #end
 

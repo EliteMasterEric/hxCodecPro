@@ -1,6 +1,7 @@
 package hxcodecpro.openfl;
 
-import openfl.events.KeyboardEvent;
+import openfl.events.Event;
+import openfl.Lib;
 import openfl.display.Sprite;
 
 /**
@@ -12,6 +13,8 @@ class VideoSprite extends Sprite
    * The bitmap used to display the video internally.
    */
   var video:VideoBitmap;
+
+  public var autoResize:Bool = false;
 
   public function new()
   {
@@ -38,6 +41,17 @@ class VideoSprite extends Sprite
     {
       video.play(path, loop, false);
     }
+
+    stage.addEventListener(Event.ENTER_FRAME, update);
+  }
+
+  function update(e:Event):Void
+  {
+    if (autoResize)
+    {
+      width = calcWidth();
+      height = calcHeight();
+    }
   }
 
   /**
@@ -48,5 +62,39 @@ class VideoSprite extends Sprite
   public function playVideoFromUrl(url:String, loop:Bool = false):Void
   {
     video.play(url, loop, true);
+  }
+
+  /**
+   * Calculate the width of the current OpenFL stage.
+   * @return Width in pixels.
+   */
+  function calcWidth():Int
+  {
+    var appliedWidth:Float = Lib.current.stage.stageHeight;
+
+    #if flixel
+    appliedWidth *= (flixel.FlxG.width / flixel.FlxG.height);
+    #end
+
+    if (appliedWidth > Lib.current.stage.stageHeight) appliedWidth = Lib.current.stage.stageHeight;
+
+    return Std.int(appliedWidth);
+  }
+
+  /**
+   * Calculate the height of the current OpenFL stage.
+   * @return Height in pixels.
+   */
+  function calcHeight():Int
+  {
+    var appliedHeight:Float = Lib.current.stage.stageWidth;
+
+    #if flixel
+    appliedHeight *= (flixel.FlxG.height / flixel.FlxG.width);
+    #end
+
+    if (appliedHeight > Lib.current.stage.stageHeight) appliedHeight = Lib.current.stage.stageHeight;
+
+    return Std.int(appliedHeight);
   }
 }

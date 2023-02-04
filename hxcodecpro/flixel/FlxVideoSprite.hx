@@ -1,5 +1,7 @@
 package hxcodecpro.flixel;
 
+import hxcodecpro.openfl.VideoBitmap;
+import flixel.util.FlxSignal;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.FlxGraphic;
@@ -34,6 +36,12 @@ class FlxVideoSprite extends FlxSprite
   public var onVideoComplete:FlxSignal;
 
   /**
+   * A signal dispatched when the video's graphic is loaded.
+   * Call `onGraphicLoaded.add()` to add a callback.
+   */
+  public var onGraphicLoaded:FlxSignal;
+
+  /**
    * The bitmap used to display the video internally.
    */
   var video:VideoBitmap;
@@ -49,31 +57,29 @@ class FlxVideoSprite extends FlxSprite
 
     onVideoOpen = new FlxSignal();
     onVideoComplete = new FlxSignal();
+    onGraphicLoaded = new FlxSignal();
 
     video = new VideoBitmap();
-    video.canUseAutoResize = false;
     video.visible = false;
 
-    video.onOpen = () -> {
-      onVideoOpen.dispatch()
+    video.onOpening = () -> {
+      onVideoOpen.dispatch();
     };
-    video.onComplete = () -> {
-      videoInitialized = false;
-
-      onVideoComplete.dispatch()
+    video.onEndReached = () -> {
+      onVideoComplete.dispatch();
     };
   }
 
   public function playVideo(path:String, loop:Bool = false, shouldPauseMusic:Bool = true):Void
   {
-    video.playVideo(path, loop, shouldPauseMusic);
+    video.play(path, loop, shouldPauseMusic);
   }
 
   public override function update(elapsed:Float):Void
   {
     super.update(elapsed);
 
-    if (!videoInitialized && video.isPlaying && video.isDisplayed && video.bitmapData != null)
+    if (!videoInitialized && video.isPlaying && video.isDisplaying && video.bitmapData != null)
     {
       var graphic:FlxGraphic = FlxG.bitmap.add(video.bitmapData, false, video.mrl);
       if (graphic.imageFrame.frame == null)
@@ -89,7 +95,7 @@ class FlxVideoSprite extends FlxSprite
         updateHitbox();
       }
 
-      if (graphicLoadedCallback != null) graphicLoadedCallback();
+      onGraphicLoaded.dispatch();
 
       videoInitialized = true;
     }

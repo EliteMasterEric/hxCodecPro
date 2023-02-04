@@ -2,7 +2,7 @@ package hxcodecpro._internal;
 
 import cpp.Int64;
 
-#if (!(desktop || android) && macro)
+#if (!(desktop || android))
 #error "LibVLC only supports the Windows, Mac, Linux, and Android target platforms."
 #end
 
@@ -27,7 +27,7 @@ extern class LibVLCError
    *       this properly handles the edge case where errmsg() returns null.
    */
   @:native("libvlc_errmsg")
-  static function errmsg():Any;
+  static function errmsg():String;
 
   /**
    * Clears the LibVLC error status for the current thread. This is optional.
@@ -46,4 +46,19 @@ extern class LibVLCError
    */
   @:native("libvlc_printerr")
   static function printerr(fmt:String):String;
+}
+
+@:buildXml("<include name='${haxelib:hxcodecpro}/project/Build.xml' />") // Link static/dynamic libraries for VLC
+@:include('vlc/vlc.h')
+@:keep // Fix issues with DCE
+@:unreflective // TODO: Write down why this is needed
+class LibVLCErrorHelper
+{
+  @:functionCode('
+    printf("[libvlc] %s\\n", libvlc_errmsg());
+  ')
+  public static function printErrorMessage():Void
+  {
+    throw 'functionCode';
+  }
 }
