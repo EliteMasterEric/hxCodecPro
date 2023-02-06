@@ -44,4 +44,4 @@ hxCodecPro is built using code adapted from [hxCodec](https://github.com/polybiu
 hxCodecPro, when used on desktop platforms, links with code from VLC, which is made available under the Lesser GPLv2 license. Check [VideoLAN.org](https://www.videolan.org/legal.html) for more information. 
 
 # contributors 
-- [Jonnycat] (https://github.com/JonnycatMeow) - Mac Support 
+- [Jonnycat](https://github.com/JonnycatMeow) - Mac Support 
